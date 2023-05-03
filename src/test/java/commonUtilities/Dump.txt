@@ -1,0 +1,119 @@
+//This method with create new file and returns file name
+	public String getFile(String newFile) {
+	try {
+		File file = new File("./target/"+newFile);
+		if(file.createNewFile()) {
+			System.out.println("File created: " + file.getName());
+		}
+		else {
+			System.out.println("File already exists" + file.getName());
+		}		
+	}
+	catch(Exception e) {
+		System.out.println(newFile + ":: Creation failed: " + e);
+		e.printStackTrace();
+	}
+	return file.getName();
+	}
+	public String createLogFile() {
+	try {
+		File file = new File("./Logs/"+"Log-"+getDate()+".txt");
+		if(file.createNewFile()) {
+			System.out.println("File created: " + file.getName());
+		}
+		else {
+			System.out.println("File already exists" + file.getName());
+		}		
+	}
+	catch(Exception e) {
+		System.out.println("File Creation failed: " + e);
+		e.printStackTrace();
+	}
+	return file.getName();
+	}
+	
+	public void Log(String logInfo) throws IOException{
+		String fileName = "Log-"+getDate()+".txt";
+		File file = new File("./Logs/"+fileName);
+		if(file.exists()){
+			writeToFile(fileName,logInfo);
+		}
+		else{
+			writeToFile(createLogFile(),logInfo);
+		}
+	}
+	
+	
+	//ExtentReportCheckDump
+	ExtentReports extent;
+	ExtentSparkReporter spark;
+	ExtentTest test;
+	
+	@BeforeSuite
+	public void suiteBegins() {
+		System.out.println("Suite Started");
+		extent = new ExtentReports();
+		spark = new ExtentSparkReporter("ExtentReports/"+util.getFileName("Temp_ExtentReports","html"));
+		spark.config().setReportName("Temp Test");
+		spark.config().setTheme(Theme.STANDARD);
+		spark.config().setDocumentTitle("Temp Extent Report Test");
+		extent.attachReporter(spark);
+		test.createNode("Before Suite");
+		extent.createTest("Before Suite").log(Status.INFO, "Before Suite");
+	}
+	
+	@AfterSuite
+	public void suiteClosure() {
+		System.out.println("Suite Completed");
+		extent.createTest("After Suite").log(Status.INFO, "After Suite");
+		extent.flush();
+	}
+	
+	extent.createTest("Date").log(Status.INFO,util.getDate());
+	extent.createTest("Time Stamp 1").log(Status.INFO,util.timestamp());
+	extent.createTest("File").log(Status.INFO,util.getFileName("Harish", "html"));
+	
+	
+	
+Log4J Implementation:
+// Initialize Log4j logs
+
+	 private static Logger Log = Logger.getLogger(Log.class.getName());//
+
+ // This is to print log for the beginning of the test case, as we usually run so many test cases as a test suite
+
+ public static void startTestCase(String sTestCaseName){
+	Log.info("****************************************************************************************");
+	Log.info("$$$$$$$$$$$$$$$$$$$$$                 "+sTestCaseName+ "       $$$$$$$$$$$$$$$$$$$$$$$$$");
+	Log.info("****************************************************************************************");
+	}
+	
+	//This is to print log for the ending of the test case
+ public static void endTestCase(String sTestCaseName){
+	Log.info("XXXXXXXXXXXXXXXXXXXXXXX             "+"-E---N---D-"+"             XXXXXXXXXXXXXXXXXXXXXX");
+	Log.info("X");
+	Log.info("X");
+	Log.info("X");
+	Log.info("X");
+	}
+	
+	// Need to create these methods, so that they can be called  
+ public static void info(String message) {
+		Log.info(message);
+		}
+		
+ public static void warn(String message) {
+    Log.warn(message);
+	}
+
+ public static void error(String message) {
+    Log.error(message);
+	}
+
+ public static void fatal(String message) {
+    Log.fatal(message);
+	}
+
+ public static void debug(String message) {
+    Log.debug(message);
+	}
